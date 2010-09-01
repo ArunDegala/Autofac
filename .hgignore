@@ -4,4 +4,9 @@ glob:*/bin/
 glob:*/obj/
 glob:*/_ReSharper*
 glob:src/Build
+glob:src/Autofac.suo
 glob:TestResult.xml
+glob:*.suo
+glob:contrib/Resource/Library/Autofac/*.dll
+glob:contrib/Resource/Library/Autofac/*.XML
+glob:Build/

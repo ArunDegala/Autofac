@@ -70,6 +70,15 @@ namespace Autofac.Core.Activators.Reflection {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The binding cannot be instantiated..
+        /// </summary>
+        internal static string CannotInstantitate {
+            get {
+                return ResourceManager.GetString("CannotInstantitate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An exception was thrown while invoking the constructor &apos;{0}&apos; on type &apos;{1}&apos;..
         /// </summary>
         internal static string ExceptionDuringInstantiation {

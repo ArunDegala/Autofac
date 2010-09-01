@@ -55,7 +55,7 @@ namespace Autofac.Core.Resolving
         {
             Enforce.ArgumentNotNull(parameters, "parameters");
             if (_executed)
-                throw new InvalidOperationException("Execute already called.");
+                throw new InvalidOperationException(ComponentActivationResources.ActivationAlreadyExecuted);
             
             _executed = true;
 
@@ -94,7 +94,7 @@ namespace Autofac.Core.Resolving
             get { return _activationScope.ComponentRegistry; }
         }
 
-        public object Resolve(IComponentRegistration registration, IEnumerable<Parameter> parameters)
+        public object ResolveComponent(IComponentRegistration registration, IEnumerable<Parameter> parameters)
         {
             return _context.Resolve(_activationScope, registration, parameters);
         }
