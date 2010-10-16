@@ -64,6 +64,15 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
   </PropertyGroup>
+  
+   <PropertyGroup Condition="$(BuildFramework)=='WP7'">
+    <BuildTargets>Windows Phone 7</BuildTargets>
+    <BuildConstants>SILVERLIGHT;SL3;WINDOWS_PHONE</BuildConstants>
+    <PackageName>$(ProjectName)-$(Version)-WP7</PackageName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+	<TargetFrameworkProfile>WindowsPhone</TargetFrameworkProfile>
+  </PropertyGroup>
 
   <PropertyGroup Condition="$(BuildFramework)=='SL4'">
     <BuildTargets>Silverlight 4.0</BuildTargets>
