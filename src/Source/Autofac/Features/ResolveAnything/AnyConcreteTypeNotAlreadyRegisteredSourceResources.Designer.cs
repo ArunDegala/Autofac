@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Autofac.Features.OpenGenerics {
+namespace Autofac.Features.ResolveAnything {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Autofac.Features.OpenGenerics {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class OpenGenericDecoratorRegistrationSourceResources {
+    internal class AnyConcreteTypeNotAlreadyRegisteredSourceResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal OpenGenericDecoratorRegistrationSourceResources() {
+        internal AnyConcreteTypeNotAlreadyRegisteredSourceResources() {
         }
         
         /// <summary>
@@ -39,7 +39,8 @@ namespace Autofac.Features.OpenGenerics {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Features.OpenGenerics.OpenGenericDecoratorRegistrationSourceResources", typeof(OpenGenericDecoratorRegistrationSourceResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Features.ResolveAnything.AnyConcreteTypeNotAlreadyRegisteredSourceResourc" +
+                            "es", typeof(AnyConcreteTypeNotAlreadyRegisteredSourceResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,20 +62,11 @@ namespace Autofac.Features.OpenGenerics {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The service {0} cannot be both the adapter&apos;s from and to parameters - these must differ..
+        ///   Looks up a localized string similar to &quot;Resolve Anything&quot; Support.
         /// </summary>
-        internal static string FromAndToMustDiffer {
+        internal static string AnyConcreteTypeNotAlreadyRegisteredSourceDescription {
             get {
-                return ResourceManager.GetString("FromAndToMustDiffer", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open Generic Decorator {0} from {1} to {2}.
-        /// </summary>
-        internal static string OpenGenericDecoratorRegistrationSourceImplFromTo {
-            get {
-                return ResourceManager.GetString("OpenGenericDecoratorRegistrationSourceImplFromTo", resourceCulture);
+                return ResourceManager.GetString("AnyConcreteTypeNotAlreadyRegisteredSourceDescription", resourceCulture);
             }
         }
     }

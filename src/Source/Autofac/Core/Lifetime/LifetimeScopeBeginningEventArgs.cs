@@ -24,33 +24,31 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 
-namespace Autofac.Core.Resolving
+namespace Autofac.Core.Lifetime
 {
     /// <summary>
-    /// An <see cref="IResolveOperation"/> is a component context that sequences and monitors the multiple
-    /// activations that go into producing a single requested object graph.
+    /// Describes when a lifetime scope is beginning.
     /// </summary>
-    public interface IResolveOperation
+    public class LifetimeScopeBeginningEventArgs : EventArgs
     {
-        /// <summary>
-        /// Get or create and share an instance of <paramref name="registration"/> in the <paramref name="currentOperationScope"/>.
-        /// </summary>
-        /// <param name="currentOperationScope">The scope in the hierarchy in which the operation will begin.</param>
-        /// <param name="registration">The component to resolve.</param>
-        /// <param name="parameters">Parameters for the component.</param>
-        /// <returns>The component instance.</returns>
-        object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, IComponentRegistration registration, IEnumerable<Parameter> parameters);
+        readonly ILifetimeScope _lifetimeScope;
 
         /// <summary>
-        /// Raised when the entire operation is complete.
+        /// Create an instance of the <see cref="LifetimeScopeBeginningEventArgs"/> class.
         /// </summary>
-        event EventHandler<ResolveOperationEndingEventArgs> CurrentOperationEnding;
+        /// <param name="lifetimeScope">The lifetime scope that is beginning.</param>
+        public LifetimeScopeBeginningEventArgs(ILifetimeScope lifetimeScope)
+        {
+            _lifetimeScope = lifetimeScope;
+        }
 
         /// <summary>
-        /// Raised when an instance is looked up within the operation.
+        /// The lifetime scope that is beginning.
         /// </summary>
-        event EventHandler<InstanceLookupBeginningEventArgs> InstanceLookupBeginning;
+        public ILifetimeScope LifetimeScope
+        {
+            get { return _lifetimeScope; }
+        }
     }
 }

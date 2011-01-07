@@ -29,28 +29,38 @@ using System.Collections.Generic;
 namespace Autofac.Core.Resolving
 {
     /// <summary>
-    /// An <see cref="IResolveOperation"/> is a component context that sequences and monitors the multiple
-    /// activations that go into producing a single requested object graph.
+    /// Represents the process of finding a component during a resolve operation.
     /// </summary>
-    public interface IResolveOperation
+    public interface IInstanceLookup
     {
         /// <summary>
-        /// Get or create and share an instance of <paramref name="registration"/> in the <paramref name="currentOperationScope"/>.
+        /// The component for which an instance is to be looked up.
         /// </summary>
-        /// <param name="currentOperationScope">The scope in the hierarchy in which the operation will begin.</param>
-        /// <param name="registration">The component to resolve.</param>
-        /// <param name="parameters">Parameters for the component.</param>
-        /// <returns>The component instance.</returns>
-        object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, IComponentRegistration registration, IEnumerable<Parameter> parameters);
+        IComponentRegistration ComponentRegistration { get; }
 
         /// <summary>
-        /// Raised when the entire operation is complete.
+        /// The scope in which the instance will be looked up.
         /// </summary>
-        event EventHandler<ResolveOperationEndingEventArgs> CurrentOperationEnding;
+        ILifetimeScope ActivationScope { get; }
 
         /// <summary>
-        /// Raised when an instance is looked up within the operation.
+        /// The parameters provided for new instance creation.
         /// </summary>
-        event EventHandler<InstanceLookupBeginningEventArgs> InstanceLookupBeginning;
+        IEnumerable<Parameter> Parameters { get; }
+
+        /// <summary>
+        /// Raised when the lookup phase of the operation is ending.
+        /// </summary>
+        event EventHandler<InstanceLookupEndingEventArgs> InstanceLookupEnding;
+
+        /// <summary>
+        /// Raised when the completion phase of an instance lookup operation begins.
+        /// </summary>
+        event EventHandler<InstanceLookupCompletionBeginningEventArgs> CompletionBeginning;
+
+        /// <summary>
+        /// Raised when the completion phase of an instance lookup operation ends.
+        /// </summary>
+        event EventHandler<InstanceLookupCompletionEndingEventArgs> CompletionEnding;
     }
 }

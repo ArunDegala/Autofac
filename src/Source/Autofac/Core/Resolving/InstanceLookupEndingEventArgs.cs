@@ -24,33 +24,43 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 
 namespace Autofac.Core.Resolving
 {
     /// <summary>
-    /// An <see cref="IResolveOperation"/> is a component context that sequences and monitors the multiple
-    /// activations that go into producing a single requested object graph.
+    /// Fired when an instance is looked up.
     /// </summary>
-    public interface IResolveOperation
+    public class InstanceLookupEndingEventArgs : EventArgs
     {
-        /// <summary>
-        /// Get or create and share an instance of <paramref name="registration"/> in the <paramref name="currentOperationScope"/>.
-        /// </summary>
-        /// <param name="currentOperationScope">The scope in the hierarchy in which the operation will begin.</param>
-        /// <param name="registration">The component to resolve.</param>
-        /// <param name="parameters">Parameters for the component.</param>
-        /// <returns>The component instance.</returns>
-        object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, IComponentRegistration registration, IEnumerable<Parameter> parameters);
+        readonly IInstanceLookup _instanceLookup;
+        readonly bool _newInstanceActivated;
 
         /// <summary>
-        /// Raised when the entire operation is complete.
+        /// Create an instance of the <see cref="InstanceLookupBeginningEventArgs"/> class.
         /// </summary>
-        event EventHandler<ResolveOperationEndingEventArgs> CurrentOperationEnding;
+        /// <param name="instanceLookup">The instance lookup that is ending.</param>
+        /// <param name="newInstanceActivated">True if a new instance was created as part of the operation.</param>
+        public InstanceLookupEndingEventArgs(IInstanceLookup instanceLookup, bool newInstanceActivated)
+        {
+            if (instanceLookup == null) throw new ArgumentNullException("instanceLookup");
+            _instanceLookup = instanceLookup;
+            _newInstanceActivated = newInstanceActivated;
+        }
 
         /// <summary>
-        /// Raised when an instance is looked up within the operation.
+        /// True if a new instance was created as part of the operation.
         /// </summary>
-        event EventHandler<InstanceLookupBeginningEventArgs> InstanceLookupBeginning;
+        public bool NewInstanceActivated
+        {
+            get { return _newInstanceActivated; }
+        }
+
+        /// <summary>
+        /// The instance lookup operation that is ending.
+        /// </summary>
+        public IInstanceLookup InstanceLookup
+        {
+            get { return _instanceLookup; }
+        }
     }
 }

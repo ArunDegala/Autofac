@@ -24,33 +24,45 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 
-namespace Autofac.Core.Resolving
+namespace Autofac.Core
 {
     /// <summary>
-    /// An <see cref="IResolveOperation"/> is a component context that sequences and monitors the multiple
-    /// activations that go into producing a single requested object graph.
+    /// Fired when an <see cref="IRegistrationSource"/> is added to the registry.
     /// </summary>
-    public interface IResolveOperation
+    public class RegistrationSourceAddedEventArgs : EventArgs
     {
-        /// <summary>
-        /// Get or create and share an instance of <paramref name="registration"/> in the <paramref name="currentOperationScope"/>.
-        /// </summary>
-        /// <param name="currentOperationScope">The scope in the hierarchy in which the operation will begin.</param>
-        /// <param name="registration">The component to resolve.</param>
-        /// <param name="parameters">Parameters for the component.</param>
-        /// <returns>The component instance.</returns>
-        object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, IComponentRegistration registration, IEnumerable<Parameter> parameters);
+        readonly IComponentRegistry _componentRegistry;
+        readonly IRegistrationSource _registrationSource;
 
         /// <summary>
-        /// Raised when the entire operation is complete.
+        /// Construct an instance of the <see cref="RegistrationSourceAddedEventArgs"/> class.
         /// </summary>
-        event EventHandler<ResolveOperationEndingEventArgs> CurrentOperationEnding;
+        /// <param name="componentRegistry">The registry to which the source was added.</param>
+        /// <param name="registrationSource">The source that was added.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public RegistrationSourceAddedEventArgs(IComponentRegistry componentRegistry, IRegistrationSource registrationSource)
+        {
+            if (componentRegistry == null) throw new ArgumentNullException("componentRegistry");
+            if (registrationSource == null) throw new ArgumentNullException("registrationSource");
+            _componentRegistry = componentRegistry;
+            _registrationSource = registrationSource;
+        }
 
         /// <summary>
-        /// Raised when an instance is looked up within the operation.
+        /// The registry to which the source was added.
         /// </summary>
-        event EventHandler<InstanceLookupBeginningEventArgs> InstanceLookupBeginning;
+        public IRegistrationSource RegistrationSource
+        {
+            get { return _registrationSource; }
+        }
+
+        /// <summary>
+        /// The source that was added.
+        /// </summary>
+        public IComponentRegistry ComponentRegistry
+        {
+            get { return _componentRegistry; }
+        }
     }
 }

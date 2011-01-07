@@ -24,33 +24,29 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 
 namespace Autofac.Core.Resolving
 {
     /// <summary>
-    /// An <see cref="IResolveOperation"/> is a component context that sequences and monitors the multiple
-    /// activations that go into producing a single requested object graph.
+    /// Fired when instance lookup is complete.
     /// </summary>
-    public interface IResolveOperation
+    public class InstanceLookupBeginningEventArgs : EventArgs
     {
-        /// <summary>
-        /// Get or create and share an instance of <paramref name="registration"/> in the <paramref name="currentOperationScope"/>.
-        /// </summary>
-        /// <param name="currentOperationScope">The scope in the hierarchy in which the operation will begin.</param>
-        /// <param name="registration">The component to resolve.</param>
-        /// <param name="parameters">Parameters for the component.</param>
-        /// <returns>The component instance.</returns>
-        object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, IComponentRegistration registration, IEnumerable<Parameter> parameters);
+        readonly IInstanceLookup _instanceLookup;
+
+        /// <param name="instanceLookup">The instance lookup that is ending.</param>
+        public InstanceLookupBeginningEventArgs(IInstanceLookup instanceLookup)
+        {
+            if (instanceLookup == null) throw new ArgumentNullException("instanceLookup");
+            _instanceLookup = instanceLookup;
+        }
 
         /// <summary>
-        /// Raised when the entire operation is complete.
+        /// The instance lookup operation that is beginning.
         /// </summary>
-        event EventHandler<ResolveOperationEndingEventArgs> CurrentOperationEnding;
-
-        /// <summary>
-        /// Raised when an instance is looked up within the operation.
-        /// </summary>
-        event EventHandler<InstanceLookupBeginningEventArgs> InstanceLookupBeginning;
+        public IInstanceLookup InstanceLookup
+        {
+            get { return _instanceLookup; }
+        }
     }
 }

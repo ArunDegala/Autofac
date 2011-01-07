@@ -24,33 +24,42 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 
 namespace Autofac.Core.Resolving
 {
     /// <summary>
-    /// An <see cref="IResolveOperation"/> is a component context that sequences and monitors the multiple
-    /// activations that go into producing a single requested object graph.
+    /// Describes the commencement of a new resolve operation.
     /// </summary>
-    public interface IResolveOperation
+    public class ResolveOperationEndingEventArgs : EventArgs
     {
-        /// <summary>
-        /// Get or create and share an instance of <paramref name="registration"/> in the <paramref name="currentOperationScope"/>.
-        /// </summary>
-        /// <param name="currentOperationScope">The scope in the hierarchy in which the operation will begin.</param>
-        /// <param name="registration">The component to resolve.</param>
-        /// <param name="parameters">Parameters for the component.</param>
-        /// <returns>The component instance.</returns>
-        object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, IComponentRegistration registration, IEnumerable<Parameter> parameters);
+        readonly IResolveOperation _resolveOperation;
+        readonly Exception _exception;
 
         /// <summary>
-        /// Raised when the entire operation is complete.
+        /// Create an instance of the <see cref="ResolveOperationBeginningEventArgs"/> class.
         /// </summary>
-        event EventHandler<ResolveOperationEndingEventArgs> CurrentOperationEnding;
+        /// <param name="resolveOperation">The resolve operation that is ending.</param>
+        /// <param name="exception">If included, the exception causing the operation to end; otherwise, null.</param>
+        public ResolveOperationEndingEventArgs(IResolveOperation resolveOperation, Exception exception = null)
+        {
+            _resolveOperation = resolveOperation;
+            _exception = exception;
+        }
 
         /// <summary>
-        /// Raised when an instance is looked up within the operation.
+        /// The exception causing the operation to end, or null.
         /// </summary>
-        event EventHandler<InstanceLookupBeginningEventArgs> InstanceLookupBeginning;
+        public Exception Exception
+        {
+            get { return _exception; }
+        }
+
+        /// <summary>
+        /// The resolve operation that is ending.
+        /// </summary>
+        public IResolveOperation ResolveOperation
+        {
+            get { return _resolveOperation; }
+        }
     }
 }
