@@ -83,7 +83,7 @@ namespace Autofac.Core.Registration
         /// <returns>True if a registration exists.</returns>
         public bool TryGetRegistration(Service service, out IComponentRegistration registration)
         {
-            Enforce.ArgumentNotNull(service, "service");
+            if (service == null) throw new ArgumentNullException("service");
             lock (_synchRoot)
             {
                 var info = GetInitializedServiceInfo(service);
@@ -98,7 +98,7 @@ namespace Autofac.Core.Registration
         /// <returns>True if the service is registered.</returns>
         public bool IsRegistered(Service service)
         {
-            Enforce.ArgumentNotNull(service, "service");
+            if (service == null) throw new ArgumentNullException("service");
             lock (_synchRoot)
             {
                 return GetInitializedServiceInfo(service).IsRegistered;
@@ -122,7 +122,7 @@ namespace Autofac.Core.Registration
         /// component will not be changed.</param>
         public virtual void Register(IComponentRegistration registration, bool preserveDefaults)
         {
-            Enforce.ArgumentNotNull(registration, "registration");
+            if (registration == null) throw new ArgumentNullException("registration");
 
             AddRegistration(registration, preserveDefaults);
 
@@ -187,7 +187,7 @@ namespace Autofac.Core.Registration
         /// <returns>Registrations supporting <paramref name="service"/>.</returns>
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service)
         {
-            Enforce.ArgumentNotNull(service, "service");
+            if (service == null) throw new ArgumentNullException("service");
             lock (_synchRoot)
             {
                 var info = GetInitializedServiceInfo(service);
@@ -207,13 +207,15 @@ namespace Autofac.Core.Registration
         /// <param name="source">The source to register.</param>
         public void AddRegistrationSource(IRegistrationSource source)
         {
-            Enforce.ArgumentNotNull(source, "source");
+            if (source == null) throw new ArgumentNullException("source");
 
             lock (_synchRoot)
             {
                 _dynamicRegistrationSources.Insert(0, source);
                 foreach (var serviceRegistrationInfo in _serviceInfo)
                     serviceRegistrationInfo.Value.Include(source);
+
+                RegistrationSourceAdded(this, new RegistrationSourceAddedEventArgs(this, source));
             }
         }
 
@@ -230,6 +232,11 @@ namespace Autofac.Core.Registration
                 }
             }
         }
+
+        /// <summary>
+        /// Fired when an <see cref="IRegistrationSource"/> is added to the registry.
+        /// </summary>
+        public event EventHandler<RegistrationSourceAddedEventArgs> RegistrationSourceAdded = delegate { };
 
         ServiceRegistrationInfo GetInitializedServiceInfo(Service service)
         {

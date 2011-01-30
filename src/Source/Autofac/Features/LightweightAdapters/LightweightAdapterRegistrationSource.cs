@@ -53,6 +53,9 @@ namespace Autofac.Features.LightweightAdapters
 
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
+            if (service == null) throw new ArgumentNullException("service");
+            if (registrationAccessor == null) throw new ArgumentNullException("registrationAccessor");
+
             if (_registrationData.Services.Contains(service))
             {
                 return registrationAccessor(_activatorData.FromService)
@@ -74,6 +77,13 @@ namespace Autofac.Features.LightweightAdapters
         public bool IsAdapterForIndividualComponents
         {
             get { return true; }
+        }
+
+        public override string ToString()
+        {
+            return string.Format(LightweightAdapterRegistrationSourceResources.AdapterFromToDescription, 
+                _activatorData.FromService.Description,
+                string.Join(", ", _registrationData.Services.Select(s => s.Description).ToArray()));
         }
     }
 }

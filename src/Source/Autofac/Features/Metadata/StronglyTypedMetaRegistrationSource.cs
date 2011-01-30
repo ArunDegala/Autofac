@@ -49,7 +49,7 @@ namespace Autofac.Features.Metadata
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
             var swt = service as IServiceWithType;
-            if (swt == null || !swt.ServiceType.IsClosingTypeOf(typeof(Meta<,>)))
+            if (swt == null || !swt.ServiceType.IsGenericTypeDefinedBy(typeof(Meta<,>)))
                 return Enumerable.Empty<IComponentRegistration>();
 
             var valueType = swt.ServiceType.GetGenericArguments()[0];
@@ -68,6 +68,11 @@ namespace Autofac.Features.Metadata
         public bool IsAdapterForIndividualComponents
         {
             get { return true; }
+        }
+
+        public override string ToString()
+        {
+            return MetaRegistrationSourceResources.StronglyTypedMetaRegistrationSourceDescription;
         }
 
         // ReSharper disable UnusedMember.Local

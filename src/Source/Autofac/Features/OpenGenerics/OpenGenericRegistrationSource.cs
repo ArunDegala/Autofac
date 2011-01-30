@@ -29,7 +29,6 @@ using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
-using Autofac.Util;
 
 namespace Autofac.Features.OpenGenerics
 {
@@ -48,29 +47,32 @@ namespace Autofac.Features.OpenGenerics
             if (registrationData == null) throw new ArgumentNullException("registrationData");
             if (activatorData == null) throw new ArgumentNullException("activatorData");
 
+            OpenGenericServiceBinder.EnforceBindable(activatorData.ImplementationType, registrationData.Services);
+
             _registrationData = registrationData;
             _activatorData = activatorData;
         }
 
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
-            Enforce.ArgumentNotNull(service, "service");
-            var result = Enumerable.Empty<IComponentRegistration>();
+            if (service == null) throw new ArgumentNullException("service");
+            if (registrationAccessor == null) throw new ArgumentNullException("registrationAccessor");
 
-            IInstanceActivator activator;
+            Type constructedImplementationType;
             IEnumerable<Service> services;
-            if (TryGenerateActivator(service, _registrationData.Services, _activatorData, out activator, out services))
+            if (OpenGenericServiceBinder.TryBindServiceType(service, _registrationData.Services, _activatorData.ImplementationType, out constructedImplementationType, out services))
             {
-                result = new[] {
-                    RegistrationBuilder.CreateRegistration(
-                        Guid.NewGuid(),
-                        _registrationData,
-                        activator,
-                        services)
-                };
+                yield return RegistrationBuilder.CreateRegistration(
+                    Guid.NewGuid(),
+                    _registrationData,
+                    new ReflectionActivator(
+                        constructedImplementationType,
+                        _activatorData.ConstructorFinder,
+                        _activatorData.ConstructorSelector,
+                        _activatorData.ConfiguredParameters,
+                        _activatorData.ConfiguredProperties),
+                    services);
             }
-
-            return result;
         }
 
         public bool IsAdapterForIndividualComponents
@@ -78,90 +80,11 @@ namespace Autofac.Features.OpenGenerics
             get { return false; }
         }
 
-        static bool TryGenerateActivator(
-            Service service,
-            IEnumerable<Service> configuredServices,
-            ReflectionActivatorData reflectionActivatorData,
-            out IInstanceActivator activator,
-            out IEnumerable<Service> services)
+        public override string ToString()
         {
-            var swt = service as IServiceWithType;
-            if (swt != null && swt.ServiceType.IsGenericType)
-            {
-                var genericTypeDefinition = swt.ServiceType.GetGenericTypeDefinition();
-                var genericArguments = swt.ServiceType.GetGenericArguments();
-
-                if (configuredServices
-                    .Cast<IServiceWithType>()
-                    .Any(s => s.ServiceType == genericTypeDefinition) &&
-                    reflectionActivatorData.ImplementationType.IsCompatibleWithGenericParameters(genericArguments))
-                {
-                    var classGenericTypes = ResolveClassArguments(reflectionActivatorData.ImplementationType, swt.ServiceType, genericTypeDefinition, genericArguments);
- 
-                    if (classGenericTypes.All(it => it != null))
-                    {
-                        activator = new ReflectionActivator(
-                            reflectionActivatorData.ImplementationType.MakeGenericType(classGenericTypes),
-                            reflectionActivatorData.ConstructorFinder,
-                            reflectionActivatorData.ConstructorSelector,
-                            reflectionActivatorData.ConfiguredParameters,
-                            reflectionActivatorData.ConfiguredProperties);
-
-                        var limitType = activator.LimitType;
-
-                        services = (from IServiceWithType s in configuredServices
-                                    let genericService = s.ServiceType.MakeGenericType(genericArguments)
-                                    where genericService.IsAssignableFrom(limitType)
-                                    select s.ChangeType(genericService)).ToArray();
-
-                        return services.Count() > 0;
-                    }
-                 }
-            }
-
-            activator = null;
-            services = null;
-            return false;
+            return string.Format(OpenGenericRegistrationSourceResources.OpenGenericRegistrationSourceDescription,
+                _activatorData.ImplementationType.FullName,
+                string.Join(", ", _registrationData.Services.Select(s => s.Description).ToArray()));
         }
-
-        static Type[] ResolveClassArguments(Type implementationType, Type serviceType, Type genericServiceType, Type[] resolvedArgs)
-        {
-            if (genericServiceType == implementationType)
-                return resolvedArgs;
-
-            var sourceArgs = implementationType.GetGenericArguments();
-            var destinationArgs =
-                serviceType.IsInterface
-                ? GetInterface(implementationType, serviceType).GetGenericArguments()
-                : genericServiceType.GetGenericArguments();
-
-            return (from source in sourceArgs
-                    select FindMatchingGenericType(source, destinationArgs, resolvedArgs)).ToArray();
-        }
-
-        static Type GetInterface(Type implementationType, Type serviceType)
-        {
-            return 
-#if SILVERLIGHT     
-                implementationType.GetInterfaces().Single(i => i.Name == serviceType.Name);
-#else
-                implementationType.GetInterface(serviceType.Name);
-#endif
-        }
-
-        static Type FindMatchingGenericType(Type source, Type[] destinationArgs, Type[] resolvedArgs)
-        {
-            return (from i in Enumerable.Range(0, destinationArgs.Length)
-                    let destination = destinationArgs[i]
-                    where !destination.IsGenericType
-                    && source.Name == destination.Name
-                    select resolvedArgs[i]).FirstOrDefault()
-                    ?? (from i in Enumerable.Range(0, destinationArgs.Length)
-                        let destination = destinationArgs[i]
-                        where destination.IsGenericType
-                        let arguments = resolvedArgs[i].GetGenericArguments()
-                        where arguments.Length > 0
-                        select FindMatchingGenericType(source, destination.GetGenericArguments(), resolvedArgs[i].GetGenericArguments())).FirstOrDefault();
-        }    
     }
 }
