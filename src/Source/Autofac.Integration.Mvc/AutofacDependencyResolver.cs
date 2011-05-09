@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2010 Autofac Contributors
+// Copyright © 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -87,6 +87,14 @@ namespace Autofac.Integration.Mvc
         {
             if (configurationAction == null) throw new ArgumentNullException("configurationAction");
             _configurationAction = configurationAction;
+        }
+
+        /// <summary>
+        /// Gets the Autofac implementation of the dependency resolver.
+        /// </summary>
+        public static AutofacDependencyResolver Current
+        {
+            get { return DependencyResolver.Current as AutofacDependencyResolver; }
         }
 
         /// <summary>

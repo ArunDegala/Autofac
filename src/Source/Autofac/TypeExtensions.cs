@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2010 Autofac Contributors
+// Copyright © 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -79,6 +79,7 @@ namespace Autofac
 
             return @this.GetTypesThatClose(openGeneric).Any();
         }
+
         /// <summary>
         /// Determines whether this type is assignable to <typeparamref name="T"/>.
         /// </summary>

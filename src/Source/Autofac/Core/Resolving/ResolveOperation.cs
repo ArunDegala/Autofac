@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2010 Autofac Contributors
+// Copyright © 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -109,7 +109,7 @@ namespace Autofac.Core.Resolving
             if (currentOperationScope == null) throw new ArgumentNullException("currentOperationScope");
             if (registration == null) throw new ArgumentNullException("registration");
             if (parameters == null) throw new ArgumentNullException("parameters");
-            if (_ended) throw new ObjectDisposedException(ResolveOperationResources.TemporaryContextDisposed);
+            if (_ended) throw new ObjectDisposedException(ResolveOperationResources.TemporaryContextDisposed, innerException: null);
 
             _circularDependencyDetector.CheckForCircularDependency(registration, _activationStack, ++_callDepth);
 

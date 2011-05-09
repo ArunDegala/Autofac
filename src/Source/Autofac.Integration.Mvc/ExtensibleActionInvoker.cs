@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2010 Autofac Contributors
+// Copyright © 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -123,11 +123,8 @@ namespace Autofac.Integration.Mvc
             return base.GetParameterValue(controllerContext, parameterDescriptor);
         }
 
-        void SetFilters<T>(ICollection<T> existing, IEnumerable<T> additional)
+        static void SetFilters<T>(ICollection<T> existing, IEnumerable<T> additional)
         {
-            foreach (var filter in existing)
-                _context.InjectProperties(filter);
-
             foreach (var add in additional)
                 existing.Add(add);
         }

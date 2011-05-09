@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2010 Autofac Contributors
+// Copyright © 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -24,8 +24,8 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Web.Mvc;
 using Autofac.Integration.Mvc;
 using Moq;
 using NUnit.Framework;
@@ -35,6 +35,18 @@ namespace Autofac.Tests.Integration.Mvc
     [TestFixture]
     public class AutofacDependencyResolverFixture
     {
+        [Test]
+        public void CurrentPropertyExposesTheCorrectResolver()
+        {
+            var container = new ContainerBuilder().Build();
+            var lifetimeScopeProvider = new StubLifetimeScopeProvider(container);
+            var resolver = new AutofacDependencyResolver(container, lifetimeScopeProvider);
+
+            DependencyResolver.SetResolver(resolver);
+
+            Assert.That(AutofacDependencyResolver.Current, Is.EqualTo(DependencyResolver.Current));
+        }
+
         [Test]
         public void NestedLifetimeScopeIsCreated()
         {

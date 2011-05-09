@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2010 Autofac Contributors
+// Copyright © 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -99,7 +99,7 @@ namespace Autofac.Core.Activators.Reflection
 
             var availableConstructors = _constructorFinder.FindConstructors(_implementationType);
 
-            if (!availableConstructors.Any())
+            if (availableConstructors.Length == 0)
                 throw new DependencyResolutionException(string.Format(ReflectionActivatorResources.NoConstructorsAvailable, _implementationType, _constructorFinder));
 
             var constructorBindings = GetConstructorBindings(
@@ -107,9 +107,11 @@ namespace Autofac.Core.Activators.Reflection
                 parameters,
                 availableConstructors);
 
-            var validBindings = constructorBindings.Where(cb => cb.CanInstantiate);
+            var validBindings = constructorBindings
+                .Where(cb => cb.CanInstantiate)
+                .ToArray();
 
-            if (!validBindings.Any())
+            if (validBindings.Length == 0)
                 throw new DependencyResolutionException(GetBindingFailureMessage(constructorBindings));
 
             var selectedBinding = _constructorSelector.SelectConstructorBinding(validBindings);
@@ -150,9 +152,7 @@ namespace Autofac.Core.Activators.Reflection
                     _configuredParameters.Concat(
                         new Parameter[] { new AutowiringParameter(), new DefaultValueParameter() }));
 
-            return constructorInfo
-                .Select(ci => new ConstructorParameterBinding(ci, prioritisedParameters, context))
-                .ToArray();
+            return constructorInfo.Select(ci => new ConstructorParameterBinding(ci, prioritisedParameters, context));
         }
 
         void InjectProperties(object instance, IComponentContext context)

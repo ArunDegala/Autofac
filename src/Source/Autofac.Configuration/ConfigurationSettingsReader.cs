@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2010 Autofac Contributors
+// Copyright © 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -31,7 +31,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
-using Autofac.Configuration.Util;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 
@@ -41,7 +40,7 @@ namespace Autofac.Configuration
     /// <summary>
     /// Configures containers based upon app.config settings.
     /// </summary>
-    public class ConfigurationSettingsReader : Autofac.Module
+    public class ConfigurationSettingsReader : Module
     {
         /// <summary>
         /// The default section name that will be searched for.
@@ -215,7 +214,7 @@ namespace Autofac.Configuration
                     case "no":
                         break;
                     case "yes":
-                        registrar.PropertiesAutowired(true);
+                        registrar.PropertiesAutowired(PropertyWiringFlags.AllowCircularDependencies);
                         break;
                     default:
                         throw new ConfigurationErrorsException(string.Format(CultureInfo.CurrentCulture,

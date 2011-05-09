@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2010 Autofac Contributors
+// Copyright © 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -306,7 +306,7 @@ namespace Autofac.Core.Lifetime
         void CheckNotDisposed()
         {
             if (IsDisposed)
-                throw new ObjectDisposedException(LifetimeScopeResources.ScopeIsDisposed);
+                throw new ObjectDisposedException(LifetimeScopeResources.ScopeIsDisposed, innerException: null);
         }
 
         /// <summary>

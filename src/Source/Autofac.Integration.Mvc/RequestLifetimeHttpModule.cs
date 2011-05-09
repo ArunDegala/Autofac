@@ -1,5 +1,5 @@
 // This software is part of the Autofac IoC container
-// Copyright (c) 2010 Autofac Contributors
+// Copyright © 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -34,11 +34,6 @@ namespace Autofac.Integration.Mvc
     /// </summary>
     internal class RequestLifetimeHttpModule : IHttpModule
     {
-        /// <summary>
-        /// Tag used to identify registrations that are scoped to the HTTP request level.
-        /// </summary>
-        internal static readonly object HttpRequestTag = "httpRequest";
-
         /// <summary>
         /// Gets the lifetime scope provider that should be notified when a HTTP request ends.
         /// </summary>

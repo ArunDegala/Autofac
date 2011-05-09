@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2010 Autofac Contributors
+// Copyright © 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -65,7 +65,7 @@ namespace Autofac.Util
             if (@this == null) throw new ArgumentNullException("this");
             if (openGeneric == null) throw new ArgumentNullException("openGeneric");
 
-            return @this.IsGenericType && @this.GetGenericTypeDefinition() == openGeneric;
+            return !@this.ContainsGenericParameters && @this.IsGenericType && @this.GetGenericTypeDefinition() == openGeneric;
         }
 
         public static bool IsDelegate(this Type type)
