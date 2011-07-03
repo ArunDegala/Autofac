@@ -1,5 +1,5 @@
 // This software is part of the Autofac IoC container
-// Copyright (c) 2010 Autofac Contributors
+// Copyright © 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -31,7 +31,7 @@ namespace Autofac.Core
     /// Fired after the construction of an instance but before that instance
     /// is shared with any other or any members are invoked on it.
     /// </summary>
-#if !NET35
+#if !(NET35 || WINDOWS_PHONE)
     public interface IActivatingEventArgs<out T>
 #else
     public interface IActivatingEventArgs<T>

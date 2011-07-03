@@ -2,11 +2,12 @@
 using System.Linq;
 using System.Reflection;
 using Autofac.Core.Activators.Reflection;
+using Autofac.Tests.Util;
 using NUnit.Framework;
 
 namespace Autofac.Tests.Core.Activators.Reflection
 {
-    class HasDefaultValues
+    public class HasDefaultValues
     {
         public HasDefaultValues(string s, string t = "Hello")
         {
@@ -14,6 +15,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
     }
 
     [TestFixture]
+    [IgnoreOnPhone("Parameter defaults don't exist until SL4")]
     public class DefaultValueParameterTests
     {
         static ParameterInfo GetTestParameter(string name)
@@ -27,6 +29,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
         {
             var dvp = new DefaultValueParameter();
             Func<object> vp;
+            var dp = GetTestParameter("s").DefaultValue;
             Assert.IsFalse(dvp.CanSupplyValue(GetTestParameter("s"), Autofac.Core.Container.Empty, out vp));
         }
 
@@ -36,6 +39,7 @@ namespace Autofac.Tests.Core.Activators.Reflection
             var dvp = new DefaultValueParameter();
             var u = GetTestParameter("t");
             Func<object> vp;
+            var dp = u.DefaultValue;
             Assert.IsTrue(dvp.CanSupplyValue(u, Autofac.Core.Container.Empty, out vp));
             Assert.AreEqual("Hello", vp());
         }

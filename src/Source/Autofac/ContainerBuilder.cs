@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2010 Autofac Contributors
+// Copyright © 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -25,6 +25,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.Collections;
 using Autofac.Features.GeneratedFactories;
@@ -33,8 +35,12 @@ using Autofac.Features.OwnedInstances;
 using Autofac.Util;
 using Autofac.Features.Metadata;
 
-#if !NET35
+#if !(NET35 || WINDOWS_PHONE)
 using Autofac.Features.LazyDependencies;
+#endif
+
+#if WINDOWS_PHONE
+using Autofac.Util.WindowsPhone;
 #endif
 
 namespace Autofac
@@ -78,6 +84,7 @@ namespace Autofac
 		/// <summary>
 		/// Create a new container with the component registrations that have been made.
 		/// </summary>
+		/// <param name="options">Options that influence the way the container is initialised.</param>
 		/// <remarks>
         /// Build can only be called once per <see cref="ContainerBuilder"/>
         /// - this prevents ownership issues for provided instances.
@@ -86,16 +93,25 @@ namespace Autofac
         /// first create the container, then call Update() on the builder.
 		/// </remarks>
 		/// <returns>A new container with the configured component registrations.</returns>
-		public IContainer Build()
+		public IContainer Build(ContainerBuildOptions options = ContainerBuildOptions.Default)
 		{
 			var result = new Container();
-			Build(result.ComponentRegistry, false);
-            foreach (var containerAware in result.Resolve<IEnumerable<IStartable>>())
-                containerAware.Start();
-			return result;
+			Build(result.ComponentRegistry, (options & ContainerBuildOptions.ExcludeDefaultModules) != ContainerBuildOptions.None);
+            if ((options & ContainerBuildOptions.IgnoreStartableComponents) == ContainerBuildOptions.None)
+                StartStartableComponents(result);
+		    return result;
 		}
 
-        /// <summary>
+	    static void StartStartableComponents(IComponentContext componentContext)
+	    {
+	        foreach (var startable in componentContext.ComponentRegistry.RegistrationsFor(new TypedService(typeof (IStartable))))
+	        {
+	            var instance = (IStartable) componentContext.ResolveComponent(startable, Enumerable.Empty<Parameter>());
+	            instance.Start();
+	        }
+	    }
+
+	    /// <summary>
         /// Configure an existing container with the component registrations
         /// that have been made.
         /// </summary>
@@ -145,14 +161,14 @@ namespace Autofac
 	    {
             this.RegisterGeneric(typeof(KeyedServiceIndex<,>)).As(typeof(IIndex<,>)).InstancePerLifetimeScope();
             componentRegistry.AddRegistrationSource(new CollectionRegistrationSource());
-            componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
             componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource());
             componentRegistry.AddRegistrationSource(new MetaRegistrationSource());
-#if !NET35
+#if !(NET35 || WINDOWS_PHONE)
             componentRegistry.AddRegistrationSource(new LazyRegistrationSource());
             componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource());
             componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource());
 #endif
+            componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
         }
 	}
 }

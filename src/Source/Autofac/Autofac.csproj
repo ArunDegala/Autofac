@@ -52,19 +52,42 @@
     <NoStdLib>true</NoStdLib>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseWP7|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <DocumentationFile>bin\Release\Autofac.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <NoStdLib>true</NoStdLib>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\Autofac.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <TargetFrameworkProfile>WindowsPhone</TargetFrameworkProfile>
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+    <SilverlightApplication>false</SilverlightApplication>
+    <MSBuildTargets>Windows Phone 7</MSBuildTargets>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
-  <ItemGroup Condition="$(TargetFrameworkVersion)=='v4.0'">
+  <ItemGroup Condition="($(TargetFrameworkVersion)=='v4.0') And ($(MSBuildTargets)!='Windows Phone 7')">
     <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
-  <ItemGroup Condition="$(TargetFrameworkVersion)=='v4.0'">
+  <ItemGroup Condition="($(TargetFrameworkVersion)=='v4.0') And ($(MSBuildTargets)!='Windows Phone 7')">
     <Compile Include="Features\LazyDependencies\LazyRegistrationSource.cs" />
     <Compile Include="Features\LazyDependencies\LazyWithMetadataRegistrationSource.cs" />
     <Compile Include="Features\Metadata\StronglyTypedMeta.cs" />
     <Compile Include="Features\Metadata\StronglyTypedMetaRegistrationSource.cs" />
+  </ItemGroup>
+  <ItemGroup Condition="$(MSBuildTargets)!='Windows Phone 7'">
+    <Compile Include="Features\GeneratedFactories\FactoryGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\GlobalAssemblyInfo.cs">
@@ -74,9 +97,11 @@
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Builder\ConcreteReflectionActivatorData.cs" />
+    <Compile Include="Builder\ContainerBuildOptions.cs" />
     <Compile Include="Builder\IRegistrationBuilder.cs" />
     <Compile Include="Builder\MetadataConfiguration.cs" />
     <Compile Include="Builder\IConcreteActivatorData.cs" />
+    <Compile Include="PropertyWiringFlags.cs" />
     <Compile Include="Builder\RegistrationBuilder.cs" />
     <Compile Include="Builder\RegistrationBuilderResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -160,11 +185,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>CollectionRegistrationSourceResources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSourceResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>GeneratedFactoryRegistrationSourceResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Features\LazyDependencies\LazyRegistrationSourceResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -317,8 +337,6 @@
     <Compile Include="Core\TypedService.cs" />
     <Compile Include="Core\UniqueService.cs" />
     <Compile Include="Features\Collections\CollectionRegistrationSource.cs" />
-    <Compile Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSource.cs" />
-    <Compile Include="Features\GeneratedFactories\FactoryGenerator.cs" />
     <Compile Include="Features\GeneratedFactories\GeneratedFactoryRegistrationExtensions.cs" />
     <Compile Include="Features\OpenGenerics\OpenGenericRegistrationSource.cs" />
     <Compile Include="Features\OwnedInstances\Owned.cs" />
@@ -372,6 +390,18 @@
     <Compile Include="Util\Silverlight\SerializableAttribute.cs" />
     <Compile Include="Util\Traverse.cs" />
     <Compile Include="Util\TypeExtensions.cs" />
+    <Compile Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSource.cs" />
+    <EmbeddedResource Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>GeneratedFactoryRegistrationSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSourceResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GeneratedFactoryRegistrationSourceResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Util\WindowsPhone\Wp7Extensions.cs" />
+    <Compile Include="Util\WindowsPhone\Wp7FactoryGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Builder\RegistrationBuilderResources.resx">
@@ -424,6 +454,7 @@
     <EmbeddedResource Include="Core\Registration\ComponentNotRegisteredExceptionResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ComponentNotRegisteredExceptionResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Core\Registration\ComponentRegistrationResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -452,10 +483,6 @@
     <EmbeddedResource Include="Features\Collections\CollectionRegistrationSourceResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>CollectionRegistrationSourceResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Features\GeneratedFactories\GeneratedFactoryRegistrationSourceResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>GeneratedFactoryRegistrationSourceResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Features\LazyDependencies\LazyRegistrationSourceResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -539,6 +566,8 @@
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="($(MSBuildTargets) == '') Or ($(MSBuildTargets) == 'CSharp')" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v4.0\Microsoft.Silverlight.CSharp.targets" Condition="$(MSBuildTargets) == 'Silverlight 4.0'" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.WindowsPhone.Overrides.targets" Condition="$(MSBuildTargets) == 'Windows Phone 7'" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" Condition="$(MSBuildTargets) == 'Windows Phone 7'" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

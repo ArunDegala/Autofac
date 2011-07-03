@@ -1,5 +1,6 @@
 ﻿using Autofac.Core.Registration;
 using NUnit.Framework;
+using Autofac.Tests.Util;
 
 namespace Autofac.Tests.Features.OpenGenerics
 {
@@ -21,6 +22,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         // ReSharper restore UnusedTypeParameter, InconsistentNaming
 
         [Test]
+        [IgnoreOnPhone("Limited open generics support http://msdn.microsoft.com/en-us/library/ff426930(VS.96).aspx#Reflection")]
         public void NestedGenericInterfacesCanBeResolved()
         {
             var cb = new ContainerBuilder();
@@ -43,6 +45,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         }
 
         [Test]
+        [IgnoreOnPhone("Limited open generics support")]
         public void CanResolveImplementationsWhereTypeParametersAreReordered()
         {
             var cb = new ContainerBuilder();
@@ -65,6 +68,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         }
 
         [Test]
+        [IgnoreOnPhone("Limited open generics support")]
         public void TestNestingAndReversingSimplification()
         {
             var cb = new ContainerBuilder();
@@ -76,6 +80,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         }
 
         [Test]
+        [IgnoreOnPhone("Limited open generics support")]
         public void TestReversingWithoutNesting()
         {
             var cb = new ContainerBuilder();
@@ -87,6 +92,7 @@ namespace Autofac.Tests.Features.OpenGenerics
         }
 
         [Test]
+        [IgnoreOnPhone("Limited open generics support")]
         public void TheSameaceholderTypeCanAppearMultipleTimesInTheService()
         {
             var cb = new ContainerBuilder();
@@ -106,6 +112,25 @@ namespace Autofac.Tests.Features.OpenGenerics
 
             Assert.Throws<ComponentNotRegisteredException>(() =>
                 container.Resolve<IDouble<decimal, INested<IDouble<string, int>>>>());
+        }
+
+        public interface IConstraint<T> { }
+
+        public class Constrained<T1, T2>
+            where T2 : IConstraint<T1>
+        {
+        }
+
+        [Test]
+        public void CanResolveComponentWithNestedConstraintViaInterface()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterGeneric(typeof (Constrained<,>));
+
+            var container = builder.Build();
+
+            Assert.That(container.IsRegistered<Constrained<int, IConstraint<int>>>());
         }
     }
 }

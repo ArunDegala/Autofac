@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2010 Autofac Contributors
+// Copyright © 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -45,11 +45,13 @@ namespace Autofac.Core.Activators.Reflection
         /// <returns>True if a value can be supplied; otherwise, false.</returns>
         public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, out Func<object> valueProvider)
         {
+#if !WINDOWS_PHONE //DefaultValue is always 'null' not DBNull
             if (!(pi.DefaultValue is DBNull))
             {
                 valueProvider = () => pi.DefaultValue;
                 return true;
             }
+#endif
             valueProvider = null;
             return false;
         }

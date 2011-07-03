@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using Autofac.Builder;
 using Autofac.Features.Indexed;
+
+#if !WINDOWS_PHONE
 using Moq;
+#endif
+
 using NUnit.Framework;
 using Autofac.Core;
 using System.Linq;
@@ -19,7 +23,7 @@ namespace Autofac.Tests
         interface IB { }
         interface IC { }
 
-        class Abc : DisposeTracker, IA, IB, IC { }
+        public class Abc : DisposeTracker, IA, IB, IC { }
 
         [Test]
         public void SimpleReg()
@@ -146,8 +150,8 @@ namespace Autofac.Tests
             target.Build();
         }
 
-        class A1 { }
-        class A2 { }
+        public class A1 { }
+        public class A2 { }
 
         public class Named
         {
@@ -412,6 +416,14 @@ namespace Autofac.Tests
         }
 
         [Test]
+        public void WhenBuildingWithDefaultsExcluded_DefaultModulesAreExcluded()
+        {
+            var builder = new ContainerBuilder();
+            var container = builder.Build(ContainerBuildOptions.ExcludeDefaultModules);
+            Assert.IsFalse(container.IsRegistered<IEnumerable<object>>());
+        }
+
+        [Test]
         public void WhenTIsRegisteredByKey_IndexCanRetrieveIt()
         {
             var key = 42;
@@ -447,8 +459,24 @@ namespace Autofac.Tests
             Assert.That(ex.Message.Contains("once"));
         }
 
+#if !WINDOWS_PHONE
         [Test]
         public void WhenTheContainerIsBuilt_StartableComponentsAreStarted()
+        {
+            const ContainerBuildOptions buildOptions = ContainerBuildOptions.Default;
+            var started = WasStartInvoked(buildOptions);
+            Assert.IsTrue(started);
+        }
+
+        [Test]
+        public void WhenNoStartIsSpecified_StartableComponentsAreIgnored()
+        {
+            const ContainerBuildOptions buildOptions = ContainerBuildOptions.IgnoreStartableComponents;
+            var started = WasStartInvoked(buildOptions);
+            Assert.IsFalse(started);
+        }
+
+        static bool WasStartInvoked(ContainerBuildOptions buildOptions)
         {
             var started = false;
             var startable = new Mock<IStartable>();
@@ -457,9 +485,9 @@ namespace Autofac.Tests
 
             var builder = new ContainerBuilder();
             builder.RegisterInstance(startable.Object);
-            builder.Build();
-
-            Assert.IsTrue(started);
+            builder.Build(buildOptions);
+            return started;
         }
+#endif
     }
 }

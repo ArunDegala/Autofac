@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2010 Autofac Contributors
+// Copyright © 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -57,7 +57,14 @@ namespace Autofac.Integration.Mef
 
         static Type FindType(string exportTypeIdentity)
         {
-            return AppDomain.CurrentDomain.GetAssemblies()
+#if SL4
+            var assemblies = System.Windows.Deployment.Current.Parts
+                .Select(r => System.Windows.Application.GetResourceStream(new Uri(r.Source, UriKind.Relative)))
+                .Select(s => new System.Windows.AssemblyPart().Load(s.Stream));
+#else
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+#endif
+            return assemblies
                 .Select(a => a.GetType(exportTypeIdentity, false))
                 .Where(t => t != null)
                 .SingleOrDefault();

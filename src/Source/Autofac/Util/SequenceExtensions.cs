@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2010 Autofac Contributors
+// Copyright © 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -86,7 +86,7 @@ namespace Autofac.Util
                 collection.Add(item);
         }
 
-#if NET35
+#if (NET35 || WINDOWS_PHONE)
         public static IEnumerable<V> Zip<T,U,V>(this IEnumerable<T> first, IEnumerable<U> second, Func<T,U,V> resultMapping)
         {
             using (var firstEnumerator = first.GetEnumerator())

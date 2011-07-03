@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2010 Autofac Contributors
+// Copyright © 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -55,8 +55,11 @@ namespace Autofac.Features.GeneratedFactories
                 return registrationAccessor(resultTypeService)
                     .Select(r =>
                     {
+#if WINDOWS_PHONE
+                        var factory = new Util.WindowsPhone.Wp7FactoryGenerator(ts.ServiceType, r, ParameterMapping.Adaptive);
+#else
                         var factory = new FactoryGenerator(ts.ServiceType, r, ParameterMapping.Adaptive);
-
+#endif
                         var rb = RegistrationBuilder.ForDelegate(ts.ServiceType, factory.GenerateFactory)
                             .InstancePerLifetimeScope()
                             .ExternallyOwned()

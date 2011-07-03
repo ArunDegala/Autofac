@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2010 Autofac Contributors
+// Copyright © 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -41,7 +41,7 @@ namespace Autofac.Builder
         bool _defaultServiceOverridden;
         Service _defaultService;
 
-#if !NET35
+#if !(NET35 || WINDOWS_PHONE)
         readonly ICollection<Service> _services = new HashSet<Service>();
 #else
         readonly ICollection<Service> _services = new List<Service>();

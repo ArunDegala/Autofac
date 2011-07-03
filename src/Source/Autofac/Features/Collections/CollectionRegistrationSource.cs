@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2010 Autofac Contributors
+// Copyright © 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -67,6 +67,10 @@ namespace Autofac.Features.Collections
                 {
                     var elementTypeService = swt.ChangeType(elementType);
                     var elementArrayType = elementType.MakeArrayType();
+#if WINDOWS_PHONE //.MakeArrayType() doesn't work for some types on WP7
+                    if (elementArrayType == null)
+                        elementArrayType = typeof (IEnumerable<>).MakeGenericType(elementType);
+#endif
 
                     var registration = new ComponentRegistration(
                         Guid.NewGuid(),

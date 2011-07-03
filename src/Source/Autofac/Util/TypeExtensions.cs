@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2010 Autofac Contributors
+// Copyright © 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -86,6 +86,7 @@ namespace Autofac.Util
         {
             var genericArgumentDefinitions = genericTypeDefinition.GetGenericArguments();
 
+#if !WINDOWS_PHONE //No support for GenericParameterAttributes
             for (var i = 0; i < genericArgumentDefinitions.Length; ++i)
             {
                 var argumentDefinition = genericArgumentDefinitions[i];
@@ -121,6 +122,7 @@ namespace Autofac.Util
                         return false;
                 }
             }
+#endif
 
             return true;
         }
@@ -128,10 +130,9 @@ namespace Autofac.Util
         static bool ParameterCompatibleWithTypeConstraint(Type parameter, Type constraint)
         {
             return constraint.IsAssignableFrom(parameter) ||
-                (parameter.IsClass &&
-                   Traverse.Across(parameter, p => p.BaseType)
-                       .Concat(parameter.GetInterfaces())
-                       .Any(p => p.GUID == constraint.GUID));
+                Traverse.Across(parameter, p => p.BaseType)
+                    .Concat(parameter.GetInterfaces())
+                    .Any(p => p.GUID == constraint.GUID);
         }
 
         public static bool IsCompatibleWith(this Type type, Type that)

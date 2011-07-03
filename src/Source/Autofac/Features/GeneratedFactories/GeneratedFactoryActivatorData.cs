@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright (c) 2010 Autofac Contributors
+// Copyright © 2011 Autofac Contributors
 // http://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -70,8 +70,13 @@ namespace Autofac.Features.GeneratedFactories
         {
             get 
             {
+#if WINDOWS_PHONE
+                var factory = new Util.WindowsPhone.Wp7FactoryGenerator(_delegateType, _productService, ParameterMapping);
+                return new DelegateActivator(_delegateType, (c, p) => factory.GenerateFactory(c, p));
+#else
                 var factory = new FactoryGenerator(_delegateType, _productService, ParameterMapping);
                 return new DelegateActivator(_delegateType, (c, p) => factory.GenerateFactory(c, p));
+#endif
             }
         }
     }
