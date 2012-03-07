@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{DD874E64-C7EC-464D-925F-CF4A709EDEEF}</ProjectGuid>
+    <ProjectGuid>{8437DAE1-0F24-44A9-A187-B34F52858A58}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Autofac.Integration.Mvc</RootNamespace>
-    <AssemblyName>Autofac.Integration.Mvc</AssemblyName>
+    <RootNamespace>Autofac.Integration.WebApi</RootNamespace>
+    <AssemblyName>Autofac.Integration.WebApi</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -37,22 +37,21 @@
     <AssemblyOriginatorKeyFile>..\..\SharedKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Resource\Library\ASP.NET Web Pages\Microsoft.Web.Infrastructure.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Web" />
+    <Reference Include="System.Net.Http, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Resource\Library\ASP.NET MVC 4\System.Net.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Resource\Library\ASP.NET MVC 4\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Resource\Library\ASP.NET MVC 4\System.Web.Mvc.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Resource\Library\ASP.NET Web Pages\System.Web.WebPages.dll</HintPath>
-    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\GlobalAssemblyInfo.cs">
@@ -61,29 +60,16 @@
     <Compile Include="..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="AutofacDependencyResolver.cs" />
-    <Compile Include="AutofacFilterAttributeFilterProvider.cs" />
-    <Compile Include="AutofacModelBinderProvider.cs" />
-    <Compile Include="AutofacWebTypesModule.cs" />
-    <Compile Include="RequestLifetimeScopeProvider.cs" />
-    <Compile Include="ExtensibleActionInvoker.cs" />
-    <Compile Include="ILifetimeScopeProvider.cs" />
-    <Compile Include="ModelBinderTypeAttribute.cs" />
-    <Compile Include="PreApplicationStartCode.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RegistrationExtensions.cs" />
-    <Compile Include="RequestLifetimeHttpModule.cs" />
-    <Compile Include="RequestLifetimeScopeProviderResources.Designer.cs">
+    <Compile Include="AutofacControllerActivator.cs" />
+    <Compile Include="AutofacControllerActivatorResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>RequestLifetimeScopeProviderResources.resx</DependentUpon>
+      <DependentUpon>AutofacControllerActivatorResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ViewRegistrationSource.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\SharedKey.snk">
-      <Link>SharedKey.snk</Link>
-    </None>
+    <Compile Include="AutofacControllerFactory.cs" />
+    <Compile Include="AutofacWebApiDependencyResolver.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegistrationExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Autofac\Autofac.csproj">
@@ -92,10 +78,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="RequestLifetimeScopeProviderResources.resx">
+    <EmbeddedResource Include="AutofacControllerActivatorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>RequestLifetimeScopeProviderResources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
+      <LastGenOutput>AutofacControllerActivatorResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
