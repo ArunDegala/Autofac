@@ -9,7 +9,7 @@ Please note that only the "[default](http://code.google.com/p/autofac/source/lis
 
 Currently, my plan is to use [hg-git](http://hg-git.github.com/) to push the source repo's commits to this repo, specifically to a branch called src-hg. That branch will then be merged into master, dev, and any feature branches. Except for that, I'll be following [this branching model](http://nvie.com/posts/a-successful-git-branching-model/). I'm prepared to accept pull requests for any branch I have pushed up other than src-hg.
 
-Feel free to send me pull requests; any changes that make it into master will be sent to the original authors @ GoogleCode as patches. Maybe our contributions can make it into the official build!
+Any changes that make it into master will be sent to the original authors @ GoogleCode as patches. Maybe our contributions can make it into the official build!
 
 For those that live on the bleeding edge, I'll be pushing a Community.Autofac.* package series up to NuGet using this repo's code.
 
