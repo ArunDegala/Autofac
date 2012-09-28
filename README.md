@@ -9,6 +9,8 @@ Please note that only the "[default](http://code.google.com/p/autofac/source/lis
 
 Currently, my plan is to use [hg-git](http://hg-git.github.com/) to push the source repo's commits to this repo.
 
-Feel free to send me pull requests; any changes that make it into this repo will be sent to the original authors @ GoogleCode as "Issues". Maybe our contributions can make it in!
+Feel free to send me pull requests; any changes that make it into master will be sent to the original authors @ GoogleCode as patches. Maybe our contributions can make it into the official build!
+
+For those that live on the bleeding edge, I'll be pushing a Community.Autofac.* package series up to NuGet using this repo's code.
 
 Please see [the original project](http://code.google.com/p/autofac/) for more info.
