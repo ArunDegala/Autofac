@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security;
 using System.Security.Permissions;
@@ -38,14 +37,14 @@ namespace Autofac.Tests.PartialTrust
 
             var target = builder.Build();
 
-            E1 e = target.Resolve<E1>();
-            A1 a = target.Resolve<A1>();
-            B1 b = target.Resolve<B1>();
-            IC1 c = target.Resolve<IC1>();
-            ID1 d = target.Resolve<ID1>();
+            var e = target.Resolve<E1>();
+            var a = target.Resolve<A1>();
+            var b = target.Resolve<B1>();
+            var c = target.Resolve<IC1>();
+            var d = target.Resolve<ID1>();
 
             Assert.IsInstanceOf<CD1>(c);
-            CD1 cd = (CD1)c;
+            var cd = (CD1)c;
 
             Assert.AreSame(a, b.A);
             Assert.AreSame(a, cd.A);
